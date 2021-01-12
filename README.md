@@ -25,5 +25,4 @@
 
   <summary>⚡ GitHub Stats</summary>
 
-  <img alt="VladKvaskov's GitHub Stats" src="https://github-readme-stats.maxkalashnyk.vercel.app/api?username=VladyslavKvaskov&show_icons=true&hide_border=true" />
-
+  <img alt="VladKvaskov's GitHub Stats" src="https://github-readme-stats.vercel.app/api?username=VladyslavKvaskov&show_icons=true&count_private=true" />
