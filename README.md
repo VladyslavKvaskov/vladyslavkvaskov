@@ -12,7 +12,7 @@
 <code><img height="20" src="https://raw.githubusercontent.com/github/explore/78df643247d429f6cc873026c0622819ad797942/topics/github/github.png" alt="Github"></code>
 
 
-![Top Langs](https://github-readme-stats.maxkalashnyk.vercel.app/api/top-langs/?username=VladyslavKvaskov&layout=compact)
+![Top Langs](https://github-readme-stats.vladkvaskov.vercel.app/api/top-langs/?username=VladyslavKvaskov&layout=compact)
 
 ---
 
@@ -25,4 +25,4 @@
 
   <summary>⚡ GitHub Stats</summary>
 
-  <img alt="VladKvaskov's GitHub Stats" src="https://github-readme-stats.vercel.app/api?username=VladyslavKvaskov&show_icons=true&count_private=true" />
+  <img alt="VladKvaskov's GitHub Stats" src="https://github-readme-stats.vladkvaskov.vercel.app/api?username=VladyslavKvaskov&show_icons=true&count_private=true" />
