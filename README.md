@@ -1,4 +1,4 @@
-### Hi there 👋, I'm a frontend developer from Kyiv.
+### Hi there 👋, I'm a frontend developer.
 
 ### Languages and Tools
 
