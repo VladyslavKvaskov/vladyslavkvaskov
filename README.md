@@ -26,3 +26,4 @@
   <summary>⚡ GitHub Stats</summary>
 
   <img alt="VladKvaskov's GitHub Stats" src="https://github-readme-stats.vladkvaskov.vercel.app/api?username=VladyslavKvaskov&show_icons=true&count_private=true" />
+  <img src="https://vkvaskov.com/test.svg" />
