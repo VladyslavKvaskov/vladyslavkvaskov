@@ -10,6 +10,7 @@
 <code><img height="20" src="https://raw.githubusercontent.com/github/explore/78df643247d429f6cc873026c0622819ad797942/topics/nodejs/nodejs.png" alt="NodeJS" title="NodeJS"></code>
 <code><img height="20" src="https://raw.githubusercontent.com/github/explore/80688e429a7d4ef2fca1e82350fe8e3517d3494d/topics/git/git.png" alt="Git" title="Git"></code>
 <code><img height="20" src="https://raw.githubusercontent.com/github/explore/78df643247d429f6cc873026c0622819ad797942/topics/github/github.png" alt="Github" title="Github"></code>
+<code><img height="20" src="https://raw.githubusercontent.com/github/explore/80688e429a7d4ef2fca1e82350fe8e3517d3494d/topics/webpack/webpack.png" alt="Webpack" title="Webpack"></code>
 
 
 ![Top Langs](https://github-readme-stats.vladkvaskov.vercel.app/api/top-langs/?username=VladyslavKvaskov&layout=compact)
@@ -26,4 +27,5 @@
   ⚡ GitHub Stats
 
   <img alt="VladKvaskov's GitHub Stats" src="https://github-readme-stats.vladkvaskov.vercel.app/api?username=VladyslavKvaskov&show_icons=true&count_private=true" />
-  <img alt="Google Developers CErtification Directory" src="https://vkvaskov.com/Untitled.png">
+  
+  [<img alt="Google Developers CErtification Directory" src="https://vkvaskov.com/Untitled.png">](https://developers.google.com/certification/directory "Google Developers Certification Directory")
