@@ -1,4 +1,4 @@
-### Hi there 👋, I'm a frontend developer.
+### Hi there 👋, I'm a full-stack developer.
 
 ### Languages and Tools
 
