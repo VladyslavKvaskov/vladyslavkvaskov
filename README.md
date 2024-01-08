@@ -29,5 +29,3 @@
   ⚡ GitHub Stats
 
   <img alt="VladKvaskov's GitHub Stats" src="https://github-readme-stats.vladkvaskov.vercel.app/api?username=VladyslavKvaskov&show_icons=true&count_private=true" />
-  
-  [<img alt="Google Developers CErtification Directory" src="https://vkvaskov.com/mws.png">](https://developers.google.com/certification/directory "Google Developers Certification Directory")
