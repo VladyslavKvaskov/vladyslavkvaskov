@@ -1,5 +1,5 @@
 ### Hi there 👋, I'm a full-stack developer.
-<img alt="VladKvaskov's GitHub Stats" src="https://weather-widget-five-gray.vercel.app/api/weather?q=Kyiv&appid=7d2b4ddde14dd3de0e84a9bd8949dbd9&units=metric" />
+<img alt="VladKvaskov's GitHub Stats" src="https://weather-widget-five-gray.vercel.app/api/weather?q=kyiv&appid=7d2b4ddde14dd3de0e84a9bd8949dbd9&units=metric" />
 
 ### Languages and Tools
 
