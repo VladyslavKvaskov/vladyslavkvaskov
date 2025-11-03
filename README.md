@@ -18,7 +18,6 @@ Hi there 👋, I'm a full-stack developer.
 
 ## Connect with me
 [<img align="left" alt="LinkedIn Profile" title="Connect on LinkedIn" width="48px" src="https://www.readmecodegen.com/api/social-icon?name=linkedin&size=48" />](https://www.linkedin.com/in/progressive-web-app-developer/)
-[<img align="left" alt="Facebook Profile" title="Connect on Facebook" width="48px" src="https://www.readmecodegen.com/api/social-icon?name=facebook&size=48" />](https://www.facebook.com/vlad.kvaskov)
 [<img align="left" alt="Send Email" title="Message on Gmail" width="48px" src="https://www.readmecodegen.com/api/social-icon?name=gmail&size=48" />](mailto:vladkvaskov123@gmail.com)
 <br />
 <br />
