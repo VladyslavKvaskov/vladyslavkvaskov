@@ -1,0 +1,206 @@
+"use client";
+import {
+  Paper,
+  Grid,
+  Box,
+  Button,
+  IconButton,
+  Tooltip,
+  Typography,
+} from "@mui/material";
+import { CloseOutlined } from "@mui/icons-material";
+import {
+  ComponentProps,
+  ReactNode,
+  useCallback,
+  useEffect,
+  useState,
+} from "react";
+import clsx from "clsx";
+import { get } from "lodash";
+import { Tilt } from "./tilt";
+import { isMobile } from "react-device-detect";
+
+type CardsProps<T> = {
+  animationName: string;
+  items: T[];
+  idKey?: string;
+  descriptionKey?: string;
+  size?: ComponentProps<typeof Grid>["size"];
+  renderCard: (item: T, isViewing: boolean) => ReactNode;
+};
+
+const Description = ({ value }: { value: string | string[] }) => {
+  if (typeof value === "string") {
+    return (
+      <Typography variant="body1" component="p">
+        {value}
+      </Typography>
+    );
+  }
+
+  if (Array.isArray(value) && value.every((item) => typeof item === "string")) {
+    return value.map((item, index) => (
+      <Typography
+        key={item}
+        variant="body1"
+        component="p"
+        sx={{
+          marginBottom: index < value.length - 1 ? 3 : undefined,
+        }}
+      >
+        {item}
+      </Typography>
+    ));
+  }
+
+  return null;
+};
+
+export function Cards<T>({
+  items,
+  idKey = "id",
+  descriptionKey = "description",
+  animationName,
+  size,
+  renderCard,
+}: CardsProps<T>) {
+  const [viewingId, setViewingId] = useState<string | null>(null);
+  const [transitionId, setTransitionId] = useState<string | null>(null);
+
+  const handleModalClose = useCallback(
+    () =>
+      document.startViewTransition(() => {
+        setViewingId(null);
+        setTransitionId(null);
+      }),
+    [],
+  );
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape" && viewingId) {
+        handleModalClose();
+      }
+    };
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [viewingId, handleModalClose]);
+
+  return (
+    <div>
+      <Grid container spacing={2}>
+        {items.map((item, index) => {
+          const id = get(item, idKey);
+          const description = get(item, descriptionKey);
+          const isViewing = viewingId === id;
+
+          return (
+            <Grid
+              size={size}
+              style={{ viewTransitionName: `${animationName}-${index}` }}
+              key={id}
+              className={clsx(
+                "wave-effect-trigger",
+                isViewing && "viewing-card",
+              )}
+              sx={{
+                cursor: !isViewing ? "pointer" : undefined,
+                zIndex: 0,
+                ...(transitionId === id && { zIndex: 1002 }),
+                "&:hover": {
+                  zIndex: isMobile ? 1002 : 1,
+                },
+                "& .MuiPaper-root": {
+                  boxShadow: (theme) => {
+                    if (isViewing) return theme.shadows[10];
+                    return theme.shadows[1];
+                  },
+                },
+                "&:hover .MuiPaper-root": {
+                  boxShadow: (theme) => theme.shadows[10],
+                },
+                "&.viewing-card": {
+                  position: "fixed",
+                  top: "50%",
+                  left: "50%",
+                  transform: "translate(-50%, -50%)",
+                  zIndex: 1002,
+                  minWidth: "320px",
+                  maxWidth: "100%",
+                },
+              }}
+              onClick={() => {
+                if (isViewing) return;
+                setTransitionId(id);
+                document.startViewTransition(() => {
+                  setViewingId(id);
+                  setTransitionId(null);
+                });
+              }}
+            >
+              <Tilt disabled={isViewing}>
+                <Paper
+                  sx={{
+                    borderRadius: "0.8rem",
+                    p: 5,
+                    position: "relative",
+                    maxHeight: "90vh",
+                    overflow: "auto",
+                  }}
+                >
+                  {renderCard(item, isViewing)}
+                  {isViewing && (
+                    <Tooltip title="Close" disableInteractive>
+                      <IconButton
+                        sx={{ position: "absolute", top: 10, right: 10 }}
+                        onClick={handleModalClose}
+                      >
+                        <CloseOutlined />
+                      </IconButton>
+                    </Tooltip>
+                  )}
+                  {isViewing ? (
+                    <Description value={description} />
+                  ) : (
+                    <Typography
+                      variant="body1"
+                      component="p"
+                      sx={{
+                        whiteSpace: "nowrap",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        marginBottom: 5,
+                      }}
+                    >
+                      {description}
+                    </Typography>
+                  )}
+                  {!isViewing && (
+                    <Button
+                      sx={{ position: "absolute", bottom: 10, right: 40 }}
+                    >
+                      Read more
+                    </Button>
+                  )}
+                </Paper>
+              </Tilt>
+            </Grid>
+          );
+        })}
+      </Grid>
+      <Box
+        style={{ viewTransitionName: `backdrop-${animationName}` }}
+        sx={{
+          position: "fixed",
+          inset: 0,
+          zIndex: 1001,
+          pointerEvents: viewingId ? "auto" : "none",
+          opacity: viewingId ? 1 : 0,
+          backgroundColor: "rgba(0, 0, 0, 0.6)",
+        }}
+        onClick={handleModalClose}
+      />
+    </div>
+  );
+}
