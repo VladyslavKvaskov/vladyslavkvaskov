@@ -9,15 +9,15 @@ import { Footer } from "./sections/footer";
 const About = () => {
   return (
     <>
-      <Container sx={{ position: "relative" }}>
+      <Container sx={{ position: "relative", mb: 10 }}>
         <Box sx={{ display: "flex", gap: 7, flexDirection: "column", mt: 3 }}>
           <Header />
           <Experience />
           <Skills />
           <Languages />
-          <Footer />
         </Box>
       </Container>
+      <Footer />
     </>
   );
 };

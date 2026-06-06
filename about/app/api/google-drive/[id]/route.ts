@@ -17,7 +17,7 @@ export async function GET(
     );
   }
 
-  const text = await response.blob();
+  const data = await response.blob();
 
-  return new NextResponse(text);
+  return new NextResponse(data);
 }

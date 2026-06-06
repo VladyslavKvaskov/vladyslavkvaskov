@@ -9,9 +9,17 @@ html {
   overflow-x: hidden;
 }
 
-@media screen and ((max-width: 800px) or (max-height: 800px)) {
+.fixed-header {
+  z-index: 2000;
+}
+
+@media screen and ((max-width: 850px) or (max-height: 800px)) {
   html {
     font-size: 16px;
+  }
+
+  .fixed-header {
+    z-index: 500;
   }
 
   .mobile-hidden {

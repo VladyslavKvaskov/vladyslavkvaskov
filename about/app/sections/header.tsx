@@ -3,14 +3,14 @@ import { useRef } from "react";
 import Image from "next/image";
 import { useInView } from "framer-motion";
 import { Paper, Box, Typography, Button, IconButton } from "@mui/material";
-import VerifiedIcon from "@mui/icons-material/Verified";
 import LocationOnOutlinedIcon from "@mui/icons-material/LocationOnOutlined";
 import LightModeIcon from "@mui/icons-material/LightMode";
 import DarkModeIcon from "@mui/icons-material/DarkMode";
 import { useThemeToggle } from "../providers/theme-provider";
 import { useWebGLImageWave } from "../hooks/use-wave-effect";
 import { useData } from "../providers/data-provider";
-import { isMobile } from "react-device-detect";
+import { Socials } from "../components/socials";
+import { ProfileName } from "../components/profile-name";
 
 export const Header = () => {
   const { profile } = useData();
@@ -28,18 +28,17 @@ export const Header = () => {
     waveSpeed: 3.0,
     waveFrequency: 4.5,
     waveAmplitude: 10.0,
-    alwaysAnimate: true,
   });
 
   return (
     <div ref={ref}>
       <Paper
+        className="fixed-header"
         sx={{
           position: "fixed",
           visibility: isInView ? "hidden" : "visible",
           top: 0,
           left: 0,
-          zIndex: isMobile ? 500 : 2000,
           width: "100vw",
           borderRadius: "unset",
           viewTransitionName: "app-bar",
@@ -50,6 +49,7 @@ export const Header = () => {
           py: 1,
           transition: "transform 0.3s, visibility 0.3s",
           transform: `translateY(${isInView ? "-200%" : "0"})`,
+          bgcolor: (theme) => theme.palette.background.paper,
         }}
         elevation={3}
       >
@@ -75,15 +75,22 @@ export const Header = () => {
             loading="eager"
           />
         </Box>
-        <Typography
-          variant="h4"
-          className="mobile-hidden"
-          sx={{ display: "flex", alignItems: "center", gap: 1 }}
-        >
-          {profile.name} <VerifiedIcon fontSize="medium" color="primary" />
-        </Typography>
+        <ProfileName
+          TypographyProps={{
+            variant: "h4",
+            className: "mobile-hidden",
+          }}
+          SvgIconProps={{
+            fontSize: "large",
+          }}
+        />
         <Box sx={{ display: "flex", gap: 3, ml: "auto" }}>
-          <Button variant="contained" href={profile.hireLink}>
+          <Socials path="profile.contacts" />
+          <Button
+            variant="contained"
+            href={profile.contacts[0].link}
+            className="mobile-hidden"
+          >
             Get in touch
           </Button>
           <IconButton onClick={toggleTheme}>
@@ -138,12 +145,15 @@ export const Header = () => {
           </Box>
         </Box>
         <Box sx={{ p: 5, mt: 5 }}>
-          <Typography
-            variant="h3"
-            sx={{ mt: 3, display: "flex", alignItems: "center", gap: 1 }}
-          >
-            {profile.name} <VerifiedIcon fontSize="large" color="primary" />
-          </Typography>
+          <ProfileName
+            TypographyProps={{
+              variant: "h3",
+              sx: { mt: 3 },
+            }}
+            SvgIconProps={{
+              fontSize: "inherit",
+            }}
+          />
           <Typography variant="h6">{profile.title}</Typography>
           <Typography
             variant="body1"
@@ -153,9 +163,23 @@ export const Header = () => {
             <LocationOnOutlinedIcon fontSize="inherit" color="inherit" />
             {profile.location}
           </Typography>
-          <Button variant="contained" sx={{ mt: 3 }} href={profile.hireLink}>
-            Get in touch
-          </Button>
+          <Box
+            sx={{
+              display: "flex",
+              // justifyContent: "space-between",
+              gap: 3,
+              mt: 3,
+            }}
+          >
+            <Button
+              variant="contained"
+              href={profile.contacts[0].link}
+              className="mobile-hidden"
+            >
+              Get in touch
+            </Button>
+            <Socials path="profile.contacts" />
+          </Box>
         </Box>
       </Paper>
     </div>

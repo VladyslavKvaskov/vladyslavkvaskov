@@ -6,9 +6,13 @@ import { useWebGLImageWave } from "../hooks/use-wave-effect";
 export const WaveImage = ({
   alt,
   googleDriveImageID,
+  width = 100,
+  height = 100,
 }: {
   alt: string;
   googleDriveImageID: string;
+  width?: number;
+  height?: number;
 }) => {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const imageRef = useRef<HTMLImageElement | null>(null);
@@ -28,16 +32,16 @@ export const WaveImage = ({
         overflow: "hidden",
         flexShrink: 0,
         position: "relative",
-        width: 100,
-        height: 100,
+        width: width,
+        height: height,
       }}
     >
       <Image
         ref={imageRef}
         src={`/api/google-drive/${googleDriveImageID}`}
         alt={alt}
-        width={100}
-        height={100}
+        width={width}
+        height={height}
         style={{ display: "block" }}
       />
     </Box>

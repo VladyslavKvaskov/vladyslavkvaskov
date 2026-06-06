@@ -1,4 +1,4 @@
-import { useEffect, RefObject } from "react";
+import { useEffect, RefObject, useRef } from "react";
 import * as THREE from "three";
 
 export interface WebGLWaveOptions {
@@ -6,7 +6,8 @@ export interface WebGLWaveOptions {
   waveFrequency?: number;
   waveAmplitude?: number;
   wireframe?: boolean;
-  alwaysAnimate?: boolean;
+  pauseWhenOffscreen?: boolean;
+  offscreenThreshold?: number;
 }
 
 export const useWebGLImageWave = (
@@ -19,8 +20,19 @@ export const useWebGLImageWave = (
     waveFrequency = 3.0,
     waveAmplitude = 12.0,
     wireframe = false,
-    alwaysAnimate = false,
+    pauseWhenOffscreen = true,
+    offscreenThreshold = 0.1, // 10% visibility threshold
   } = options;
+
+  // Store animation state in refs for persistence
+  const animationStateRef = useRef<{
+    isPlaying: boolean;
+    animationFrameId?: number;
+    isLoopRunning: boolean;
+  }>({
+    isPlaying: true,
+    isLoopRunning: false,
+  });
 
   useEffect(() => {
     const container = containerRef?.current;
@@ -111,7 +123,7 @@ export const useWebGLImageWave = (
         uTime: { value: 0.0 },
         uFrequency: { value: waveFrequency },
         uAmplitude: { value: waveAmplitude },
-        uEffectIntensity: { value: alwaysAnimate ? 1.0 : 0.0 },
+        uEffectIntensity: { value: 1.0 },
         uPlaneResolution: { value: new THREE.Vector2(width, height) },
         uTextureResolution: { value: new THREE.Vector2(100, 100) },
         uTexture: { value: new THREE.Texture() },
@@ -173,87 +185,91 @@ export const useWebGLImageWave = (
       }
 
       // Re-trigger static snapshot draw on width changes
-      renderer.render(scene, camera);
+      if (animationStateRef.current.isPlaying) {
+        renderer.render(scene, camera);
+      }
     });
 
     resizeObserver.observe(img);
 
-    // 5. Smart Loop Management Engine Properties
-    let targetIntensity = alwaysAnimate ? 1.0 : 0.0;
-    let currentIntensity = alwaysAnimate ? 1.0 : 0.0;
-    let isLoopRunning = false;
-    let animationFrameId: number;
+    // 5. Intersection Observer for Offscreen Detection
+    let intersectionObserver: IntersectionObserver | null = null;
+
+    if (pauseWhenOffscreen) {
+      intersectionObserver = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            const isVisible = entry.isIntersecting;
+
+            if (isVisible && !animationStateRef.current.isPlaying) {
+              // Element became visible - resume animation
+              animationStateRef.current.isPlaying = true;
+
+              // Reset timer to avoid time jumps
+              if (timer) {
+                timer.update();
+              }
+            } else if (!isVisible && animationStateRef.current.isPlaying) {
+              // Element became hidden - pause animation
+              animationStateRef.current.isPlaying = false;
+            }
+          });
+        },
+        {
+          threshold: offscreenThreshold,
+          rootMargin: "0px",
+        },
+      );
+
+      // Observe the image element for visibility changes
+      intersectionObserver.observe(img);
+    }
+
+    // 6. Smart Loop Management Engine Properties
+    let animationFrameId: number | undefined;
     const timer = new THREE.Timer();
 
     // The conditional frame executor engine
     const animate = () => {
       animationFrameId = requestAnimationFrame(animate);
-      timer.update();
 
-      material.uniforms.uTime.value = timer.getElapsed() * waveSpeed;
-
-      if (!alwaysAnimate) {
-        currentIntensity += (targetIntensity - currentIntensity) * 0.15;
-        material.uniforms.uEffectIntensity.value = currentIntensity;
-
-        // CRITICAL PERFORMANCE FIX:
-        // Break out and kill the requestAnimationFrame loop once the mesh settles completely flat
-        if (targetIntensity === 0.0 && currentIntensity < 0.001) {
-          currentIntensity = 0.0;
-          material.uniforms.uEffectIntensity.value = 0.0;
-          renderer.render(scene, camera); // Final flat snapshot draw
-          cancelAnimationFrame(animationFrameId);
-          isLoopRunning = false;
-          return;
-        }
+      // Only update time and render if the animation should be playing
+      if (animationStateRef.current.isPlaying) {
+        timer.update();
+        material.uniforms.uTime.value = timer.getElapsed() * waveSpeed;
+        renderer.render(scene, camera);
+      } else {
+        // When paused, just keep the loop running but don't update time
+        // This prevents the shader from accumulating time while offscreen
+        // Optionally, you can still render a static frame
+        renderer.render(scene, camera);
       }
-
-      renderer.render(scene, camera);
     };
 
     // Helper method to safely spin up loop routines
     const startAnimationLoop = () => {
-      if (!isLoopRunning) {
-        isLoopRunning = true;
+      if (!animationStateRef.current.isLoopRunning) {
+        animationStateRef.current.isLoopRunning = true;
         animate();
       }
     };
 
-    // 6. Interaction Listeners
-    const handleMouseEnter = (): void => {
-      if (!alwaysAnimate) {
-        targetIntensity = 1.0;
-        startAnimationLoop(); // Wake loop context up instantly
-      }
-    };
+    startAnimationLoop();
 
-    const handleMouseLeave = (): void => {
-      if (!alwaysAnimate) {
-        targetIntensity = 0.0; // The loop will auto-kill inside animate() once flat
-      }
-    };
-
-    const triggerElement = container.closest(".wave-effect-trigger");
-
-    if (!alwaysAnimate && triggerElement) {
-      triggerElement.addEventListener("mouseenter", handleMouseEnter);
-      triggerElement.addEventListener("mouseleave", handleMouseLeave);
-    }
-
-    // Spin up permanently only if alwaysAnimate property is true
-    if (alwaysAnimate) {
-      startAnimationLoop();
-    }
+    // Store animation frame ID for cleanup
+    animationStateRef.current.animationFrameId = animationFrameId;
 
     // 7. Cleanup
     return () => {
-      cancelAnimationFrame(animationFrameId);
-      resizeObserver.disconnect();
-
-      if (!alwaysAnimate && triggerElement) {
-        triggerElement.removeEventListener("mouseenter", handleMouseEnter);
-        triggerElement.removeEventListener("mouseleave", handleMouseLeave);
+      if (animationFrameId) {
+        cancelAnimationFrame(animationFrameId);
       }
+
+      if (intersectionObserver) {
+        intersectionObserver.disconnect();
+      }
+
+      resizeObserver.disconnect();
 
       const targetImageElement = img;
       if (targetImageElement) targetImageElement.style.opacity = "1";
@@ -268,6 +284,12 @@ export const useWebGLImageWave = (
       geometry.dispose();
       material.dispose();
       renderer.dispose();
+
+      // Reset state
+      animationStateRef.current = {
+        isPlaying: true,
+        isLoopRunning: false,
+      };
     };
   }, [
     containerRef,
@@ -276,6 +298,7 @@ export const useWebGLImageWave = (
     waveFrequency,
     waveAmplitude,
     wireframe,
-    alwaysAnimate,
+    pauseWhenOffscreen,
+    offscreenThreshold,
   ]);
 };

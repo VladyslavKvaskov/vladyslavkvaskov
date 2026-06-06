@@ -111,13 +111,13 @@ export function Cards<T>({
                 "&:hover": {
                   zIndex: isMobile ? 1002 : 1,
                 },
-                "& .MuiPaper-root": {
+                "&>.MuiPaper-root": {
                   boxShadow: (theme) => {
                     if (isViewing) return theme.shadows[10];
                     return theme.shadows[1];
                   },
                 },
-                "&:hover .MuiPaper-root": {
+                "&:hover>.MuiPaper-root": {
                   boxShadow: (theme) => theme.shadows[10],
                 },
                 "&.viewing-card": {
@@ -141,48 +141,63 @@ export function Cards<T>({
             >
               <Tilt disabled={isViewing}>
                 <Paper
+                  className="sticky-scrollable-container"
                   sx={{
                     borderRadius: "0.8rem",
-                    p: 5,
                     position: "relative",
                     maxHeight: "90vh",
                     overflow: "auto",
                   }}
                 >
-                  {renderCard(item, isViewing)}
                   {isViewing && (
-                    <Tooltip title="Close" disableInteractive>
-                      <IconButton
-                        sx={{ position: "absolute", top: 10, right: 10 }}
-                        onClick={handleModalClose}
-                      >
-                        <CloseOutlined />
-                      </IconButton>
-                    </Tooltip>
-                  )}
-                  {isViewing ? (
-                    <Description value={description} />
-                  ) : (
-                    <Typography
-                      variant="body1"
-                      component="p"
+                    <Box
                       sx={{
-                        whiteSpace: "nowrap",
-                        overflow: "hidden",
-                        textOverflow: "ellipsis",
-                        marginBottom: 5,
+                        position: "sticky",
+                        top: 0,
+                        right: 0,
+                        display: "flex",
+                        justifyContent: "end",
+                        zIndex: 3,
                       }}
                     >
-                      {description}
-                    </Typography>
+                      <Tooltip title="Close" disableInteractive>
+                        <IconButton
+                          onClick={handleModalClose}
+                          sx={{
+                            position: "absolute",
+                            top: "10px",
+                            right: "10px",
+                          }}
+                        >
+                          <CloseOutlined />
+                        </IconButton>
+                      </Tooltip>
+                    </Box>
                   )}
-                  {!isViewing && (
-                    <Button
-                      sx={{ position: "absolute", bottom: 10, right: 40 }}
-                    >
-                      Read more
-                    </Button>
-                  )}
+                  {renderCard(item, isViewing)}
+                  <Box sx={{ px: 5, pt: 5, pb: 3 }}>
+                    {isViewing ? (
+                      <Description value={description} />
+                    ) : (
+                      <Typography
+                        variant="body1"
+                        component="p"
+                        sx={{
+                          whiteSpace: "nowrap",
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                          marginBottom: 5,
+                        }}
+                      >
+                        {description}
+                      </Typography>
+                    )}
+                    {!isViewing && (
+                      <Box sx={{ display: "flex", justifyContent: "end" }}>
+                        <Button>Read more</Button>
+                      </Box>
+                    )}
+                  </Box>
                 </Paper>
               </Tilt>
             </Grid>

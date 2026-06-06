@@ -30,19 +30,20 @@ export default function ThemeProviderWrapper({
   const theme = createTheme({
     palette: { mode },
     components: {
-      ...(mode === "light" && {
-        MuiTooltip: {
-          styleOverrides: {
-            tooltip: ({ theme }) => ({
-              ...(mode === "light" && {
-                backgroundColor: "#fff",
-                color: theme.palette.text.primary,
-                boxShadow: theme.shadows[1],
-              }),
+      MuiTooltip: {
+        styleOverrides: {
+          tooltip: ({ theme }) => ({
+            ...(mode === "light" && {
+              backgroundColor: "#fff",
+              color: theme.palette.text.primary,
+              boxShadow: theme.shadows[1],
             }),
+          }),
+          popper: {
+            zIndex: 10000,
           },
         },
-      }),
+      },
       MuiCssBaseline: {
         styleOverrides: {
           body: {
