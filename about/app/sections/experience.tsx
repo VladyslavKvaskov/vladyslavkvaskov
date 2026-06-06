@@ -29,7 +29,7 @@ const ExperienceCard = ({
         gap: 2,
         position: "sticky",
         top: "-1px",
-        px: isSticky ? 2 : 5,
+        px: 5,
         mt: 3,
         py: 2,
         borderRadius: "unset",

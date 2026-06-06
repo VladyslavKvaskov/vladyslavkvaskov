@@ -1,6 +1,6 @@
 "use client";
 import { useRef } from "react";
-import { Typography, Box, Paper } from "@mui/material";
+import { Typography, Paper } from "@mui/material";
 import ConstructionOutlinedIcon from "@mui/icons-material/ConstructionOutlined";
 import { Cards } from "../components/cards";
 import { useWebGLImageWave } from "../hooks/use-wave-effect";
@@ -30,7 +30,7 @@ const SkillCardItem = ({ name, logo }: { name: string; logo: string }) => {
         width: "100%",
         position: "sticky",
         top: "-1px",
-        px: isSticky ? 2 : 5,
+        px: 5,
         mt: 3,
         py: 2,
         borderRadius: "unset",
