@@ -31,7 +31,7 @@ export const Header = () => {
   });
 
   return (
-    <div ref={ref}>
+    <header role="banner" ref={ref}>
       <Paper
         className="fixed-header"
         sx={{
@@ -108,19 +108,22 @@ export const Header = () => {
         elevation={1}
       >
         <Box sx={{ position: "relative" }}>
-          <div ref={waveContainerRef}>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
+          <Box
+            ref={waveContainerRef}
+            sx={{ height: "200px", position: "relative" }}
+          >
+            <Image
               ref={waveImageRef}
               src={`/api/google-drive/${profile.background}`}
               alt="cover"
+              fill
               style={{
-                height: 200,
-                width: "100%",
                 objectFit: "cover",
               }}
+              sizes="100vw"
+              loading="eager"
             />
-          </div>
+          </Box>
           <Box
             sx={(theme) => ({
               width: 160,
@@ -182,6 +185,6 @@ export const Header = () => {
           </Box>
         </Box>
       </Paper>
-    </div>
+    </header>
   );
 };

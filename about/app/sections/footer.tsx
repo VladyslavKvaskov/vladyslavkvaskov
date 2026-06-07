@@ -27,6 +27,7 @@ export const Footer = () => {
   return (
     <Box
       component="footer"
+      role="contentinfo"
       sx={(theme) => ({
         bgcolor: theme.palette.background.paper,
         color: theme.palette.text.secondary,

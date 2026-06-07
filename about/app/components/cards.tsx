@@ -68,23 +68,41 @@ export function Cards<T>({
   const [viewingId, setViewingId] = useState<string | null>(null);
   const [transitionId, setTransitionId] = useState<string | null>(null);
 
-  const handleModalClose = useCallback(
-    () =>
-      document.startViewTransition(() => {
-        setViewingId(null);
-        setTransitionId(null);
-      }),
-    [],
-  );
+  const handleModalClose = useCallback(() => {
+    const transition = document.startViewTransition(() => {
+      setViewingId(null);
+      setTransitionId(null);
+    });
+
+    transition.finished.finally(() => {
+      document.body.style.removeProperty("overflow");
+      document.documentElement.style.removeProperty("overflow");
+    });
+  }, []);
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape" && viewingId) {
+      if (event.key === "Escape") {
         handleModalClose();
       }
     };
-    document.addEventListener("keydown", handleKeyDown);
-    return () => document.removeEventListener("keydown", handleKeyDown);
+
+    if (viewingId) {
+      document.body.style.overflow = "hidden";
+      document.documentElement.style.overflow = "hidden";
+
+      document.addEventListener("keydown", handleKeyDown);
+    } else {
+      document.body.style.removeProperty("overflow");
+      document.documentElement.style.removeProperty("overflow");
+      document.removeEventListener("keydown", handleKeyDown);
+    }
+
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+      document.body.style.removeProperty("overflow");
+      document.documentElement.style.removeProperty("overflow");
+    };
   }, [viewingId, handleModalClose]);
 
   return (

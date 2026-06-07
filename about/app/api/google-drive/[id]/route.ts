@@ -8,8 +8,9 @@ export async function GET(
   const url = `https://drive.google.com/uc?export=download&id=${fileId}`;
 
   const response = await fetch(url, {
-    next: { revalidate: 60 },
+    next: { revalidate: 60 * 60 * 24 * 30 },
   });
+
   if (!response.ok) {
     return NextResponse.json(
       { error: "Failed to fetch from Google Drive" },

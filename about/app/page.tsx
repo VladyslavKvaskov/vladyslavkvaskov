@@ -12,9 +12,15 @@ const About = () => {
       <Container sx={{ position: "relative", mb: 10 }}>
         <Box sx={{ display: "flex", gap: 7, flexDirection: "column", mt: 3 }}>
           <Header />
-          <Experience />
-          <Skills />
-          <Languages />
+          <Box
+            component="main"
+            role="main"
+            sx={{ display: "flex", gap: 7, flexDirection: "column" }}
+          >
+            <Experience />
+            <Skills />
+            <Languages />
+          </Box>
         </Box>
       </Container>
       <Footer />
