@@ -8,6 +8,7 @@ import type { Experience as ExperienceType } from "../types";
 import { useRef } from "react";
 import { useStickyObserver } from "../hooks/use-sticky-observer";
 import { Duration } from "../components/duration";
+import { format } from "date-fns";
 
 const ExperienceCard = ({
   companyName,
@@ -54,7 +55,10 @@ const ExperienceCard = ({
           • {type}
         </Typography>
         <Typography variant="body2" component="div">
-          {from} — {to}
+          {Number.isNaN(new Date(from).getTime())
+            ? from
+            : format(from, "MMM yyyy")}{" "}
+          — {Number.isNaN(new Date(to).getTime()) ? to : format(to, "MMM yyyy")}
           <Duration start={from} end={new Date(to).getTime() || new Date()} />
         </Typography>
       </div>

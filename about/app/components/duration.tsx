@@ -1,4 +1,5 @@
 import { Typography } from "@mui/material";
+import { differenceInMonths, differenceInYears } from "date-fns";
 
 const getDuration = (
   start: Date | number | string,
@@ -7,21 +8,12 @@ const getDuration = (
   const startDate = new Date(start);
   const endDate = new Date(end);
 
-  let years = endDate.getFullYear() - startDate.getFullYear();
-  let months = endDate.getMonth() - startDate.getMonth();
-
-  if (months < 0) {
-    years--;
-    months += 12;
+  if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
+    return { years: 0, months: 0 };
   }
 
-  if (endDate.getDate() < startDate.getDate()) {
-    months--;
-    if (months < 0) {
-      months = 11;
-      years--;
-    }
-  }
+  const years = differenceInYears(endDate, startDate);
+  const months = differenceInMonths(endDate, startDate) - years * 12;
 
   return { years, months };
 };
