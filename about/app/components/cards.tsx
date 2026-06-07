@@ -19,7 +19,7 @@ import {
 import clsx from "clsx";
 import { get } from "lodash";
 import { Tilt } from "./tilt";
-import { isMobile } from "react-device-detect";
+import { useDetextTouchScreenOnly } from "../hooks/use-detect-touch-sceen-only";
 
 type CardsProps<T> = {
   animationName: string;
@@ -57,16 +57,17 @@ const Description = ({ value }: { value: string | string[] }) => {
   return null;
 };
 
-export function Cards<T>({
+export const Cards = <T,>({
   items,
   idKey = "id",
   descriptionKey = "description",
   animationName,
   size,
   renderCard,
-}: CardsProps<T>) {
+}: CardsProps<T>) => {
   const [viewingId, setViewingId] = useState<string | null>(null);
   const [transitionId, setTransitionId] = useState<string | null>(null);
+  const isTouchScreen = useDetextTouchScreenOnly();
 
   const handleModalClose = useCallback(() => {
     const transition = document.startViewTransition(() => {
@@ -127,7 +128,7 @@ export function Cards<T>({
                 zIndex: 0,
                 ...(transitionId === id && { zIndex: 1002 }),
                 "&:hover": {
-                  zIndex: isMobile ? 1002 : 1,
+                  zIndex: isTouchScreen ? 1002 : 1,
                 },
                 "&>.MuiPaper-root": {
                   boxShadow: (theme) => {
@@ -236,4 +237,4 @@ export function Cards<T>({
       />
     </div>
   );
-}
+};
