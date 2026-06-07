@@ -123,6 +123,8 @@ export const Header = () => {
               }}
               sizes="100vw"
               loading="eager"
+              fetchPriority="high"
+              decoding="sync"
             />
           </Box>
           <Box
