@@ -1,6 +1,6 @@
 "use client";
 import { useRef } from "react";
-import { Typography, Paper } from "@mui/material";
+import { Typography, Paper, Box } from "@mui/material";
 import ConstructionOutlinedIcon from "@mui/icons-material/ConstructionOutlined";
 import { Cards } from "../components/cards";
 import { useWebGLImageWave } from "../hooks/use-wave-effect";
@@ -50,13 +50,19 @@ export const Skills = () => {
   const { skills } = useData();
   return (
     <div>
-      <Typography
-        variant="h4"
-        component="h2"
-        sx={{ mb: 3, display: "flex", alignItems: "center", gap: 2 }}
+      <Box
+        sx={{
+          mb: 3,
+          display: "flex",
+          alignItems: "start",
+          gap: 2,
+        }}
       >
-        <ConstructionOutlinedIcon fontSize="large" /> Technical Expertise
-      </Typography>
+        <ConstructionOutlinedIcon fontSize="large" sx={{ mt: "0.2rem" }} />
+        <Typography variant="h4" component="h2">
+          Experience
+        </Typography>
+      </Box>
       <Cards
         idKey="name"
         items={skills}

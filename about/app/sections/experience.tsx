@@ -1,5 +1,5 @@
 "use client";
-import { Link, Paper, Typography } from "@mui/material";
+import { Box, Link, Paper, Typography } from "@mui/material";
 import WorkOutlineOutlinedIcon from "@mui/icons-material/WorkOutlineOutlined";
 import { Cards } from "../components/cards";
 import { useData } from "../providers/data-provider";
@@ -7,6 +7,7 @@ import { WaveImage } from "../components/wave-image";
 import type { Experience as ExperienceType } from "../types";
 import { useRef } from "react";
 import { useStickyObserver } from "../hooks/use-sticky-observer";
+import { Duration } from "../components/duration";
 
 const ExperienceCard = ({
   companyName,
@@ -52,8 +53,9 @@ const ExperienceCard = ({
           </Link>{" "}
           • {type}
         </Typography>
-        <Typography variant="body2" sx={{ mb: 3 }}>
+        <Typography variant="body2" component="div">
           {from} — {to}
+          <Duration start={from} end={new Date(to).getTime() || new Date()} />
         </Typography>
       </div>
     </Paper>
@@ -63,15 +65,39 @@ const ExperienceCard = ({
 export const Experience = () => {
   const { experience } = useData();
 
+  const start = Math.min(
+    ...experience
+      .map(({ from }) => new Date(from).getTime())
+      .filter((timestamp) => !Number.isNaN(timestamp)),
+  );
+
+  const end = new Date();
+
   return (
     <div>
-      <Typography
-        variant="h4"
-        component="h2"
-        sx={{ mb: 3, display: "flex", alignItems: "center", gap: 2 }}
+      <Box
+        sx={{
+          mb: 3,
+          display: "flex",
+          alignItems: "start",
+          gap: 2,
+        }}
       >
-        <WorkOutlineOutlinedIcon fontSize="large" /> Experience
-      </Typography>
+        <WorkOutlineOutlinedIcon fontSize="large" sx={{ mt: "0.2rem" }} />
+        <Typography
+          variant="h4"
+          component="h2"
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            gap: 1,
+            flexWrap: "wrap",
+          }}
+        >
+          Experience
+          <Duration start={start} end={end} />
+        </Typography>
+      </Box>
       <Cards
         animationName="experience"
         idKey="companyName"
