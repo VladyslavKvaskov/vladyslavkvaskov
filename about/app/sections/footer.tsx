@@ -56,7 +56,11 @@ export const Footer = () => {
             </Stack>
           </Grid>
           <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-            <Typography variant="subtitle1" sx={{ mb: 2, fontWeight: 600 }}>
+            <Typography
+              variant="subtitle1"
+              component="div"
+              sx={{ mb: 2, fontWeight: 600 }}
+            >
               Contact
             </Typography>
             <Stack spacing={1.5}>

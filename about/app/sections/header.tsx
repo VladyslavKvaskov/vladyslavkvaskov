@@ -153,14 +153,15 @@ export const Header = () => {
             <ProfileName
               TypographyProps={{
                 variant: "h3",
-                component: "div",
                 sx: { mt: 3 },
               }}
               SvgIconProps={{
                 fontSize: "inherit",
               }}
             />
-            <Typography variant="h6">{profile.title}</Typography>
+            <Typography variant="h6" component="div">
+              {profile.title}
+            </Typography>
           </h1>
           <Typography
             variant="body1"

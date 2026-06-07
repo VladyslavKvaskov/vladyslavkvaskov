@@ -15,6 +15,7 @@ export const ProfileName = ({
 
   return (
     <Typography
+      component="div"
       {...TypographyProps}
       sx={{
         fontWeight: 700,
