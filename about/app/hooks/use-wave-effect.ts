@@ -1,4 +1,4 @@
-import { useEffect, RefObject, useRef } from "react";
+import { useEffect, RefObject, useRef, useCallback } from "react";
 import * as THREE from "three";
 
 export interface WebGLWaveOptions {
@@ -8,6 +8,8 @@ export interface WebGLWaveOptions {
   wireframe?: boolean;
   pauseWhenOffscreen?: boolean;
   offscreenThreshold?: number;
+  lazyInit?: boolean;
+  lazyInitThreshold?: number;
 }
 
 export const useWebGLImageWave = (
@@ -21,20 +23,29 @@ export const useWebGLImageWave = (
     waveAmplitude = 12.0,
     wireframe = false,
     pauseWhenOffscreen = true,
-    offscreenThreshold = 0.1, // 10% visibility threshold
+    offscreenThreshold = 0.1,
+    lazyInit = true,
+    lazyInitThreshold = 0.1,
   } = options;
 
+  // Use refs instead of state to avoid re-renders
+  const hasInitializedRef = useRef(false);
+  const initObserverRef = useRef<IntersectionObserver | null>(null);
+  const cleanupRef = useRef<(() => void) | null>(null);
+
   // Store animation state in refs for persistence
-  const animationStateRef = useRef<{
-    isPlaying: boolean;
-    animationFrameId?: number;
-    isLoopRunning: boolean;
-  }>({
+  const animationStateRef = useRef({
     isPlaying: true,
     isLoopRunning: false,
+    isInitialized: false,
   });
 
-  useEffect(() => {
+  // Define initializeWebGL with useCallback to prevent recreation
+  const initializeWebGL = useCallback(() => {
+    // Prevent duplicate initialization
+    if (animationStateRef.current.isInitialized) return;
+    animationStateRef.current.isInitialized = true;
+
     const container = containerRef?.current;
     if (!container) return;
 
@@ -152,7 +163,6 @@ export const useWebGLImageWave = (
       targetImageElement.style.opacity = "0";
       textureLoaded = true;
 
-      // Initial render frame execution to draw the base image safely
       renderer.render(scene, camera);
     });
 
@@ -184,7 +194,6 @@ export const useWebGLImageWave = (
         (material.uniforms.uTexture.value as THREE.Texture).needsUpdate = true;
       }
 
-      // Re-trigger static snapshot draw on width changes
       if (animationStateRef.current.isPlaying) {
         renderer.render(scene, camera);
       }
@@ -202,15 +211,8 @@ export const useWebGLImageWave = (
             const isVisible = entry.isIntersecting;
 
             if (isVisible && !animationStateRef.current.isPlaying) {
-              // Element became visible - resume animation
               animationStateRef.current.isPlaying = true;
-
-              // Reset timer to avoid time jumps
-              if (timer) {
-                timer.update();
-              }
             } else if (!isVisible && animationStateRef.current.isPlaying) {
-              // Element became hidden - pause animation
               animationStateRef.current.isPlaying = false;
             }
           });
@@ -221,46 +223,33 @@ export const useWebGLImageWave = (
         },
       );
 
-      // Observe the image element for visibility changes
       intersectionObserver.observe(img);
     }
 
-    // 6. Smart Loop Management Engine Properties
+    // 6. Animation Loop
     let animationFrameId: number | undefined;
-    const timer = new THREE.Timer();
+    let lastTime = performance.now();
 
-    // The conditional frame executor engine
     const animate = () => {
       animationFrameId = requestAnimationFrame(animate);
 
-      // Only update time and render if the animation should be playing
       if (animationStateRef.current.isPlaying) {
-        timer.update();
-        material.uniforms.uTime.value = timer.getElapsed() * waveSpeed;
+        const currentTime = performance.now();
+        const delta = (currentTime - lastTime) / 1000;
+        lastTime = currentTime;
+
+        material.uniforms.uTime.value += delta * waveSpeed;
         renderer.render(scene, camera);
       } else {
-        // When paused, just keep the loop running but don't update time
-        // This prevents the shader from accumulating time while offscreen
-        // Optionally, you can still render a static frame
         renderer.render(scene, camera);
       }
     };
 
-    // Helper method to safely spin up loop routines
-    const startAnimationLoop = () => {
-      if (!animationStateRef.current.isLoopRunning) {
-        animationStateRef.current.isLoopRunning = true;
-        animate();
-      }
-    };
+    animate();
+    animationStateRef.current.isLoopRunning = true;
 
-    startAnimationLoop();
-
-    // Store animation frame ID for cleanup
-    animationStateRef.current.animationFrameId = animationFrameId;
-
-    // 7. Cleanup
-    return () => {
+    // Store cleanup function
+    cleanupRef.current = () => {
       if (animationFrameId) {
         cancelAnimationFrame(animationFrameId);
       }
@@ -284,12 +273,6 @@ export const useWebGLImageWave = (
       geometry.dispose();
       material.dispose();
       renderer.dispose();
-
-      // Reset state
-      animationStateRef.current = {
-        isPlaying: true,
-        isLoopRunning: false,
-      };
     };
   }, [
     containerRef,
@@ -301,4 +284,57 @@ export const useWebGLImageWave = (
     pauseWhenOffscreen,
     offscreenThreshold,
   ]);
+
+  // Lazy initialization effect
+  useEffect(() => {
+    if (!lazyInit) {
+      // Initialize immediately
+      initializeWebGL();
+      return;
+    }
+
+    const container = containerRef?.current;
+    const currentRef = imageRef?.current;
+    const img =
+      currentRef?.tagName === "IMG"
+        ? (currentRef as HTMLImageElement)
+        : (currentRef?.querySelector("img") as HTMLImageElement | null);
+
+    if (!container || !img) return;
+
+    // Create observer to wait for element to become visible
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting && !hasInitializedRef.current) {
+            hasInitializedRef.current = true;
+            observer.disconnect();
+            initializeWebGL();
+          }
+        });
+      },
+      {
+        threshold: lazyInitThreshold,
+        rootMargin: "50px",
+      },
+    );
+
+    observer.observe(img);
+    initObserverRef.current = observer;
+
+    return () => {
+      if (initObserverRef.current) {
+        initObserverRef.current.disconnect();
+      }
+    };
+  }, [lazyInit, lazyInitThreshold, initializeWebGL, containerRef, imageRef]); // Now includes initializeWebGL
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      if (cleanupRef.current) {
+        cleanupRef.current();
+      }
+    };
+  }, []);
 };
