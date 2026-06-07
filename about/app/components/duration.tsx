@@ -40,7 +40,7 @@ export const Duration = ({
   }
 
   return (
-    <Typography variant="caption" component="div">
+    <Typography variant="body2" component="div" color="textSecondary">
       ({years > 0 && `${years} year${years > 1 ? "s" : ""}`}
       {years > 0 && months > 0 && " "}
       {months > 0 && `${months} month${months > 1 ? "s" : ""}`})
