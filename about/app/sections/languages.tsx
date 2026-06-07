@@ -9,6 +9,7 @@ export const Languages = () => {
     <div>
       <Typography
         variant="h4"
+        component="h2"
         sx={{ mb: 3, display: "flex", alignItems: "center", gap: 2 }}
       >
         <LanguageIcon fontSize="large" /> Languages
@@ -28,6 +29,7 @@ export const Languages = () => {
                 sx={{ mb: 3 }}
                 variant="determinate"
                 value={progress}
+                aria-label={`${title} progress`}
               />
               <Typography variant="body1" component="p">
                 {description}

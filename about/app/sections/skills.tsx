@@ -52,6 +52,7 @@ export const Skills = () => {
     <div>
       <Typography
         variant="h4"
+        component="h2"
         sx={{ mb: 3, display: "flex", alignItems: "center", gap: 2 }}
       >
         <ConstructionOutlinedIcon fontSize="large" /> Technical Expertise

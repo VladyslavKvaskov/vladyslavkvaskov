@@ -70,6 +70,7 @@ export const Header = () => {
               width: 70,
               height: 70,
             }}
+            priority
             width={70}
             height={70}
             loading="eager"
@@ -148,16 +149,19 @@ export const Header = () => {
           </Box>
         </Box>
         <Box sx={{ p: 5, mt: 5 }}>
-          <ProfileName
-            TypographyProps={{
-              variant: "h3",
-              sx: { mt: 3 },
-            }}
-            SvgIconProps={{
-              fontSize: "inherit",
-            }}
-          />
-          <Typography variant="h6">{profile.title}</Typography>
+          <h1 style={{ margin: 0 }}>
+            <ProfileName
+              TypographyProps={{
+                variant: "h3",
+                component: "div",
+                sx: { mt: 3 },
+              }}
+              SvgIconProps={{
+                fontSize: "inherit",
+              }}
+            />
+            <Typography variant="h6">{profile.title}</Typography>
+          </h1>
           <Typography
             variant="body1"
             color="textSecondary"
@@ -169,7 +173,6 @@ export const Header = () => {
           <Box
             sx={{
               display: "flex",
-              // justifyContent: "space-between",
               gap: 3,
               mt: 3,
             }}
