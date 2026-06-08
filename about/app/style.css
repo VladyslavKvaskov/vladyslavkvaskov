@@ -8,15 +8,7 @@ html {
   scrollbar-gutter: stable;
 }
 
-.fixed-header {
-  z-index: 2000;
-}
-
 @media screen and ((max-width: 850px) or (max-height: 800px)) {
-  .fixed-header {
-    z-index: 500;
-  }
-
   .mobile-hidden {
     display: none !important;
   }

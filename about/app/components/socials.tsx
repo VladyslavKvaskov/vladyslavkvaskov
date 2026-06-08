@@ -46,22 +46,28 @@ export const Socials = ({ path }: { path: string }) => {
     <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
       {get(data, path).map(
         ({ name, link }: { name: AppName; link: string }) => (
-          <Tooltip key={name} title={name}>
-            <IconButton
-              href={link}
-              sx={(theme) => ({
-                overflow: "hidden",
-                transition: "box-shadow 0.2s",
-                boxShadow: theme.shadows[1],
-                "&:hover": {
-                  boxShadow: theme.shadows[3],
-                },
-              })}
-              color={getColor(name)}
-            >
-              {renderIcon(name)}
-            </IconButton>
-          </Tooltip>
+          <IconButton
+            key={name}
+            href={link}
+            sx={(theme) => ({
+              overflow: "hidden",
+              transition: "box-shadow 0.3s, max-width 0.5s",
+              willChange: "max-width",
+              borderRadius: "2rem",
+              boxShadow: theme.shadows[1],
+              fontSize: "1rem",
+              maxWidth: "40px",
+              justifyContent: "start",
+              gap: 1,
+              "&:hover": {
+                boxShadow: theme.shadows[3],
+                maxWidth: "200px",
+              },
+            })}
+            color={getColor(name)}
+          >
+            {renderIcon(name)} {name}
+          </IconButton>
         ),
       )}
     </Box>

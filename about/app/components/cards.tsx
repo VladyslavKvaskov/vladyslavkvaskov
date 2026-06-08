@@ -119,10 +119,7 @@ export const Cards = <T,>({
               size={size}
               style={{ viewTransitionName: `${animationName}-${index}` }}
               key={id}
-              className={clsx(
-                "wave-effect-trigger",
-                isViewing && "viewing-card",
-              )}
+              className={clsx(isViewing && "viewing-card")}
               sx={{
                 cursor: !isViewing ? "pointer" : undefined,
                 zIndex: 0,
@@ -164,7 +161,7 @@ export const Cards = <T,>({
                   sx={{
                     borderRadius: "0.8rem",
                     position: "relative",
-                    maxHeight: "90vh",
+                    maxHeight: "calc(100vh - 150px)",
                     overflow: "auto",
                   }}
                 >

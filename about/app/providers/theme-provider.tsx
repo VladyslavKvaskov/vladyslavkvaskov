@@ -28,7 +28,12 @@ export default function ThemeProviderWrapper({
   const [mode, setMode] = useState<"light" | "dark">(initialMode);
 
   const theme = createTheme({
-    palette: { mode },
+    palette: {
+      mode,
+      background: {
+        default: mode === "light" ? "#eff6ff" : "#121212",
+      },
+    },
     components: {
       MuiTooltip: {
         styleOverrides: {

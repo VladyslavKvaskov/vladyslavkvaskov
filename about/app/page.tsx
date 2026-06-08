@@ -9,20 +9,32 @@ import { Footer } from "./sections/footer";
 const About = () => {
   return (
     <>
-      <Container sx={{ position: "relative", mb: 10 }}>
-        <Box sx={{ display: "flex", gap: 7, flexDirection: "column", mt: 3 }}>
-          <Header />
-          <Box
-            component="main"
-            role="main"
-            sx={{ display: "flex", gap: 7, flexDirection: "column" }}
-          >
-            <Experience />
-            <Skills />
-            <Languages />
-          </Box>
-        </Box>
-      </Container>
+      <Header />
+      <Box
+        component="main"
+        role="main"
+        sx={{
+          position: "relative",
+          borderTopLeftRadius: "20px",
+          borderTopRightRadius: "20px",
+          zIndex: 1,
+          pb: 10,
+          background: (theme) => theme.palette.background.default,
+        }}
+      >
+        <Container
+          sx={{
+            display: "flex",
+            gap: 7,
+            flexDirection: "column",
+            pt: 3,
+          }}
+        >
+          <Experience />
+          <Skills />
+          <Languages />
+        </Container>
+      </Box>
       <Footer />
     </>
   );

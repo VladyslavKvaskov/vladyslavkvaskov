@@ -44,7 +44,7 @@ export default async function RootLayout({
 
   return (
     <html lang="en">
-      <body>
+      <body cz-shortcut-listen="true">
         <ThemeProviderWrapper initialMode={initialMode}>
           <DataProvider value={data}>{children}</DataProvider>
         </ThemeProviderWrapper>

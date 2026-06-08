@@ -34,6 +34,8 @@ export const Footer = () => {
         borderTop: `1px solid ${theme.palette.divider}`,
         mt: "auto",
         py: theme.spacing(4),
+        position: "relative",
+        zIndex: 1,
       })}
     >
       <Container maxWidth="lg">

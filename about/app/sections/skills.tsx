@@ -60,7 +60,7 @@ export const Skills = () => {
       >
         <ConstructionOutlinedIcon fontSize="large" sx={{ mt: "0.2rem" }} />
         <Typography variant="h4" component="h2">
-          Experience
+          Technical Expertise
         </Typography>
       </Box>
       <Cards
